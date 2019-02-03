@@ -8,7 +8,7 @@ from background_task import background
 etiConn = albatross.Connection(username="podrick", password="luelinks")
 
 def query_users(request):
-    bg_users()
+    # bg_users()
 
     return HttpResponse();
 

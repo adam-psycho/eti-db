@@ -1,0 +1,5 @@
+albatross==3.2
+Django==2.0.10
+psycopg2==2.7.7
+pytz==2018.9
+django-heroku==0.3.1

@@ -3,27 +3,10 @@ import datetime
 import albatross
 from django.http import HttpResponse
 from etidb import models;
-from background_task import background
 
 etiConn = albatross.Connection(username="podrick", password="luelinks")
 
 def query_users(request):
-    # bg_users()
-
-    return HttpResponse();
-
-
-def query_topics(request):
-    # November 1st 2018, set to Eastern timezone
-
-    bg_topics(request.GET.get('start_time'), request.GET.get('end_time'))
-
-    return HttpResponse("Running")
-
-
-
-@background(schedule=1)
-def bg_users():
     literally_all_users = etiConn.users().search(recurse=True)
     eti_users = [];
     for user in literally_all_users:
@@ -33,13 +16,17 @@ def bg_users():
 
     models.EtiUser.objects.bulk_create(eti_users)
 
+    return HttpResponse();
 
-@background(schedule=1)
-def bg_topics(start_time, end_time):
+
+def query_topics(request):
+    # November 1st 2018, set to Eastern timezone
     tz = pytz.timezone('US/Pacific')
+    activeSince = datetime.datetime.strptime(
+        request.GET.get('start_time'), '%Y-%m-%d').replace(tzinfo=tz)
+    maxTime = datetime.datetime.strptime(
+        request.GET.get('end_time'), '%Y-%m-%d').replace(tzinfo=tz)
 
-    activeSince = datetime.datetime.strptime(start_time, '%Y-%m-%d').replace(tzinfo=tz)
-    maxTime = datetime.datetime.strptime(end_time, '%Y-%m-%d').replace(tzinfo=tz)
     topics = etiConn.topics(allowedTags=["LUE"], forbiddenTags=["Anonymous"]).search(
         activeSince=activeSince, maxTime=maxTime, recurse=True)
 
@@ -67,3 +54,7 @@ def bg_topics(start_time, end_time):
                 post_count=topic.postCount,
                 eti_user=models.EtiUser(topic.user.id),
                 created=topic.lastPostTime)
+
+
+
+    return HttpResponse("Created: {}\nUpdate: {}".format(created, updated))

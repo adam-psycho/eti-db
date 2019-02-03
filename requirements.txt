@@ -1,4 +1,4 @@
-albatross==3.2
+git+git://github.com/adam-psycho/albatross.git
 Django==2.0.10
 psycopg2==2.7.7
 pytz==2018.9

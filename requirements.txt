@@ -1,5 +1,6 @@
 git+git://github.com/adam-psycho/albatross.git
 Django==2.0.10
+django-background-tasks==1.2.0
 psycopg2==2.7.7
 pytz==2018.9
 django-heroku==0.3.1
